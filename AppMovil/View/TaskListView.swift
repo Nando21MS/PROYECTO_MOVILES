@@ -15,9 +15,10 @@ struct TaskListView: View {
     @State private var showDatePicker = false
     @State private var showingTaskDetail = false
     @State private var selectedTask: TaskEntity? = nil  // Cambiado de Task a TaskEntity
+    @State private var showCompletedTasks = false  // Estado para controlar la visibilidad de tareas completadas
 
     init(viewContext: NSManagedObjectContext) {
-           _viewModel = StateObject(wrappedValue: TaskListViewModel(context: viewContext))
+        _viewModel = StateObject(wrappedValue: TaskListViewModel(context: viewContext))
     }
 
     var body: some View {
@@ -25,8 +26,10 @@ struct TaskListView: View {
             ZStack {
                 VStack {
                     List {
-                        ForEach(viewModel.tasks) { task in
+                        // Tareas activas (no completadas)
+                        ForEach(viewModel.tasks.filter { !$0.isCompleted }) { task in
                             HStack {
+                                // Columna 1: Checkbox para marcar como completada
                                 Button(action: {
                                     viewModel.toggleTaskCompletion(task: task)
                                 }) {
@@ -34,43 +37,114 @@ struct TaskListView: View {
                                         .foregroundColor(task.isCompleted ? .green : .gray)
                                         .font(.title2)
                                 }
+                                .frame(width: 40, height: 40)
+                                .padding(.trailing, 10)
+                                .buttonStyle(PlainButtonStyle()) // Solo el checkbox es clickeable
 
-                                VStack(alignment: .leading) {
-                                    Text(task.title)
-                                        .strikethrough(task.isCompleted)
-                                        .foregroundColor(task.isCompleted ? .gray : .primary)
-                                        .font(.headline)
+                                // Columna 2: Datos de la tarea
+                                ZStack {
+                                    Rectangle()
+                                        .foregroundColor(Color.clear)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            if !task.isCompleted {
+                                                selectedTask = task
+                                                showingTaskDetail.toggle()
+                                            }
+                                        }
 
-                                    if let reminderDate = task.reminderDate {
-                                        Text("Reminder: \(reminderDate, formatter: dateFormatter)")
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
+                                    VStack(alignment: .leading) {
+                                        Text(task.title)
+                                            .strikethrough(task.isCompleted)
+                                            .foregroundColor(task.isCompleted ? .gray : .primary)
+                                            .font(.headline)
+
+                                        if let reminderDate = task.reminderDate {
+                                            Text("Reminder: \(reminderDate, formatter: dateFormatter)")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
                                     }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                Spacer()
-                            }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                selectedTask = task  // Usamos TaskEntity aquí
-                                showingTaskDetail.toggle()
+
+                                // Columna 3: Contenedor de eliminar
+                                HStack {
+                                    Button(action: {
+                                        viewModel.deleteTask(task: task)
+                                    }) {
+                                        Image(systemName: "trash.fill")
+                                            .foregroundColor(.red)
+                                            .font(.title2)
+                                    }
+                                    .buttonStyle(BorderlessButtonStyle()) // Evita conflictos de gestos
+                                }
                             }
                             .padding(.vertical, 8)
+                            .opacity(task.isCompleted ? 0.5 : 1.0) // Menor opacidad si está completada
                         }
-                        .onDelete(perform: deleteTask)
+
+                        // Tareas completadas (lista desplegable)
+                        DisclosureGroup("Completed Tasks") {
+                            ForEach(viewModel.tasks.filter { $0.isCompleted }) { task in
+                                HStack {
+                                    Button(action: {
+                                        viewModel.toggleTaskCompletion(task: task)
+                                    }) {
+                                        Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                            .foregroundColor(task.isCompleted ? .green : .gray)
+                                            .font(.title2)
+                                    }
+                                    .frame(width: 40, height: 40)
+                                    .padding(.trailing, 10)
+                                    .buttonStyle(PlainButtonStyle())
+
+                                    VStack(alignment: .leading) {
+                                        Text(task.title)
+                                            .strikethrough(task.isCompleted)
+                                            .foregroundColor(task.isCompleted ? .gray : .primary)
+                                            .font(.headline)
+
+                                        if let reminderDate = task.reminderDate {
+                                            Text("Reminder: \(reminderDate, formatter: dateFormatter)")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                                    HStack {
+                                        Button(action: {
+                                            viewModel.deleteTask(task: task)
+                                        }) {
+                                            Image(systemName: "trash.fill")
+                                                .foregroundColor(.red)
+                                                .font(.title2)
+                                        }
+                                        .buttonStyle(BorderlessButtonStyle())
+                                    }
+                                }
+                                .padding(.vertical, 8)
+                                .opacity(0.5) // Tareas completadas con menor opacidad
+                            }
+                        }
                     }
                     .listStyle(PlainListStyle())
 
                     Spacer()
+
+                    // Botón para agregar nueva tarea
                     HStack {
                         Spacer()
                         Button(action: {
                             newTaskTitle = ""
                             reminderDate = nil
                             showDatePicker = false
+                            selectedTask = nil
                             showingTaskDetail.toggle()
                         }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.largeTitle)
+                            Image(systemName: "plus")
+                                .font(.title)
                                 .foregroundColor(.white)
                                 .padding()
                                 .background(Circle().fill(Color.blue))
@@ -86,7 +160,7 @@ struct TaskListView: View {
                     VStack {
                         Spacer()
                         TaskDetailView(
-                            task: selectedTask,  // Usamos TaskEntity aquí también
+                            task: selectedTask, // Usamos TaskEntity aquí también
                             onSave: { title, reminderDate in
                                 if let task = selectedTask {
                                     viewModel.updateTask(task: task, title: title, reminderDate: reminderDate)
@@ -122,4 +196,3 @@ struct TaskListView: View {
         return formatter
     }()
 }
-
