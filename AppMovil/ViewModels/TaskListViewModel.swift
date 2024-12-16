@@ -53,7 +53,7 @@ class TaskListViewModel: ObservableObject {
     }
 
     func fetchAllTasks() {
-        let request = TaskEntity.fetchAllTaskRequest()  // Usamos TaskEntity
+        let request: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()  // Usamos TaskEntity
         do {
             tasks = try context.fetch(request)
         } catch {
@@ -75,7 +75,7 @@ class TaskListViewModel: ObservableObject {
         guard let reminderDate = task.reminderDate else { return }
         let content = UNMutableNotificationContent()
         content.title = "Reminder"
-        content.body = task.title
+        content.body = task.title ?? "No title"
         content.sound = .default
 
         let trigger = UNCalendarNotificationTrigger(

@@ -13,25 +13,16 @@ struct HomeView: View {
     @Environment(\.managedObjectContext) private var viewContext // Acceder al viewContext desde el Environment
 
     var body: some View {
-        VStack {
-            // Mensaje de bienvenida
-            Text("¡Bienvenido, \(username)!")
-                .font(.title)
-                .fontWeight(.semibold)
-                .padding(.top)
-
-            TabView {
-                
-                TaskListView(viewContext: viewContext)  // Pasar el viewContext aquí
-                    .tabItem {
-                        Label("Tasks", systemImage: "checkmark.circle")
-                    }
-                NoteListView()
-                    .tabItem {
-                        Label("Notes", systemImage: "note.text")
-                    }
-            }
-        }
+        TabView {
+                    TaskListView(viewContext: viewContext)  // Pasar el viewContext aquí
+                        .tabItem {
+                            Label("Tasks", systemImage: "checkmark.circle")
+                        }
+                    NoteListView()
+                        .tabItem {
+                            Label("Notes", systemImage: "note.text")
+                        }
+                }
     }
 }
 
