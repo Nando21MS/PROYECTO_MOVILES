@@ -8,21 +8,39 @@
 
 /* Begin PBXBuildFile section */
 		B7FF40372D0DFB5700457101 /* AppMovilApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF40362D0DFB5700457101 /* AppMovilApp.swift */; };
-		B7FF40392D0DFB5700457101 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF40382D0DFB5700457101 /* ContentView.swift */; };
 		B7FF403B2D0DFB5800457101 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7FF403A2D0DFB5800457101 /* Assets.xcassets */; };
 		B7FF403E2D0DFB5800457101 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7FF403D2D0DFB5800457101 /* Preview Assets.xcassets */; };
-		B7FF40402D0DFB5800457101 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF403F2D0DFB5800457101 /* Persistence.swift */; };
+		B7FF40402D0DFB5800457101 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF403F2D0DFB5800457101 /* PersistenceController.swift */; };
 		B7FF40432D0DFB5800457101 /* AppMovil.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B7FF40412D0DFB5800457101 /* AppMovil.xcdatamodeld */; };
+		B7FF404E2D0DFD9700457101 /* TaskEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF404D2D0DFD9700457101 /* TaskEntity.swift */; };
+		B7FF40502D0DFE7B00457101 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF404F2D0DFE7B00457101 /* Note.swift */; };
+		B7FF40522D0DFE9D00457101 /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF40512D0DFE9D00457101 /* TaskListViewModel.swift */; };
+		B7FF40542D0DFED500457101 /* NoteListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF40532D0DFED500457101 /* NoteListViewModel.swift */; };
+		B7FF40562D0DFF9700457101 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF40552D0DFF9700457101 /* TaskListView.swift */; };
+		B7FF40582D0DFFAE00457101 /* NoteListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF40572D0DFFAE00457101 /* NoteListView.swift */; };
+		B7FF405C2D0E02D300457101 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF405B2D0E02D300457101 /* HomeView.swift */; };
+		B7FF405E2D0E056C00457101 /* NewNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF405D2D0E056C00457101 /* NewNoteView.swift */; };
+		B7FF40602D0E05A200457101 /* DetailNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF405F2D0E05A200457101 /* DetailNoteView.swift */; };
+		B7FF40662D0E234C00457101 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7FF40652D0E234C00457101 /* TaskDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B7FF40332D0DFB5700457101 /* AppMovil.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppMovil.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7FF40362D0DFB5700457101 /* AppMovilApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMovilApp.swift; sourceTree = "<group>"; };
-		B7FF40382D0DFB5700457101 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B7FF403A2D0DFB5800457101 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7FF403D2D0DFB5800457101 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		B7FF403F2D0DFB5800457101 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		B7FF403F2D0DFB5800457101 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		B7FF40422D0DFB5800457101 /* AppMovil.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppMovil.xcdatamodel; sourceTree = "<group>"; };
+		B7FF404D2D0DFD9700457101 /* TaskEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEntity.swift; sourceTree = "<group>"; };
+		B7FF404F2D0DFE7B00457101 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		B7FF40512D0DFE9D00457101 /* TaskListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewModel.swift; sourceTree = "<group>"; };
+		B7FF40532D0DFED500457101 /* NoteListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteListViewModel.swift; sourceTree = "<group>"; };
+		B7FF40552D0DFF9700457101 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
+		B7FF40572D0DFFAE00457101 /* NoteListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteListView.swift; sourceTree = "<group>"; };
+		B7FF405B2D0E02D300457101 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		B7FF405D2D0E056C00457101 /* NewNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteView.swift; sourceTree = "<group>"; };
+		B7FF405F2D0E05A200457101 /* DetailNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailNoteView.swift; sourceTree = "<group>"; };
+		B7FF40652D0E234C00457101 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,10 +73,12 @@
 		B7FF40352D0DFB5700457101 /* AppMovil */ = {
 			isa = PBXGroup;
 			children = (
+				B7FF404C2D0DFC2A00457101 /* View */,
+				B7FF404B2D0DFC1700457101 /* ViewModels */,
+				B7FF404A2D0DFC0600457101 /* Models */,
+				B7FF40492D0DFBF800457101 /* Service */,
 				B7FF40362D0DFB5700457101 /* AppMovilApp.swift */,
-				B7FF40382D0DFB5700457101 /* ContentView.swift */,
 				B7FF403A2D0DFB5800457101 /* Assets.xcassets */,
-				B7FF403F2D0DFB5800457101 /* Persistence.swift */,
 				B7FF40412D0DFB5800457101 /* AppMovil.xcdatamodeld */,
 				B7FF403C2D0DFB5800457101 /* Preview Content */,
 			);
@@ -71,6 +91,45 @@
 				B7FF403D2D0DFB5800457101 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		B7FF40492D0DFBF800457101 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B7FF403F2D0DFB5800457101 /* PersistenceController.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		B7FF404A2D0DFC0600457101 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B7FF404D2D0DFD9700457101 /* TaskEntity.swift */,
+				B7FF404F2D0DFE7B00457101 /* Note.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		B7FF404B2D0DFC1700457101 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				B7FF40512D0DFE9D00457101 /* TaskListViewModel.swift */,
+				B7FF40532D0DFED500457101 /* NoteListViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		B7FF404C2D0DFC2A00457101 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B7FF40552D0DFF9700457101 /* TaskListView.swift */,
+				B7FF40572D0DFFAE00457101 /* NoteListView.swift */,
+				B7FF405B2D0E02D300457101 /* HomeView.swift */,
+				B7FF405D2D0E056C00457101 /* NewNoteView.swift */,
+				B7FF405F2D0E05A200457101 /* DetailNoteView.swift */,
+				B7FF40652D0E234C00457101 /* TaskDetailView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,10 +202,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B7FF40402D0DFB5800457101 /* Persistence.swift in Sources */,
+				B7FF40662D0E234C00457101 /* TaskDetailView.swift in Sources */,
+				B7FF40502D0DFE7B00457101 /* Note.swift in Sources */,
+				B7FF404E2D0DFD9700457101 /* TaskEntity.swift in Sources */,
+				B7FF40582D0DFFAE00457101 /* NoteListView.swift in Sources */,
+				B7FF405C2D0E02D300457101 /* HomeView.swift in Sources */,
+				B7FF40402D0DFB5800457101 /* PersistenceController.swift in Sources */,
+				B7FF405E2D0E056C00457101 /* NewNoteView.swift in Sources */,
 				B7FF40432D0DFB5800457101 /* AppMovil.xcdatamodeld in Sources */,
-				B7FF40392D0DFB5700457101 /* ContentView.swift in Sources */,
+				B7FF40602D0E05A200457101 /* DetailNoteView.swift in Sources */,
 				B7FF40372D0DFB5700457101 /* AppMovilApp.swift in Sources */,
+				B7FF40542D0DFED500457101 /* NoteListViewModel.swift in Sources */,
+				B7FF40522D0DFE9D00457101 /* TaskListViewModel.swift in Sources */,
+				B7FF40562D0DFF9700457101 /* TaskListView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
