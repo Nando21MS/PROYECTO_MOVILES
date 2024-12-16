@@ -11,6 +11,9 @@ struct TaskDetailView: View {
     @State private var title: String
     @State private var reminderDate: Date?
     @State private var setReminder: Bool = false  // Nueva propiedad para habilitar/deshabilitar recordatorio
+    @State private var showAlert = false  // Para controlar la alerta
+    @State private var alertMessage = ""  // Mensaje de la alerta
+
     @Environment(\.dismiss) var dismiss
 
     let onSave: (String, Date?) -> Void
@@ -56,12 +59,24 @@ struct TaskDetailView: View {
                 Spacer()
 
                 Button("Save") {
-                    onSave(title, setReminder ? reminderDate : nil)  // Solo pasa el recordatorio si está activado
+                    // Verificar si la fecha y hora del recordatorio es mayor a la fecha y hora actuales
+                    if let reminderDate = reminderDate, reminderDate <= Date() {
+                        alertMessage = "The reminder date and time must be in the future."
+                        showAlert = true
+                    } else {
+                        // Si todo es correcto, guardar la tarea
+                        onSave(title, setReminder ? reminderDate : nil)  // Solo pasa el recordatorio si está activado
+                    }
                 }
                 .foregroundColor(.blue)
             }
             .padding()
         }
         .padding()
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Invalid Date/Time"),
+                  message: Text(alertMessage),
+                  dismissButton: .default(Text("OK")))
+        }
     }
 }
