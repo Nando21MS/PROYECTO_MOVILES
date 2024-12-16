@@ -59,7 +59,7 @@ struct TaskListView: View {
                                         }
 
                                     VStack(alignment: .leading) {
-                                        Text(task.title)
+                                        Text(task.title ?? "Título desconocido")
                                             .strikethrough(task.isCompleted)
                                             .foregroundColor(task.isCompleted ? .gray : .primary)
                                             .font(.headline)
@@ -120,7 +120,7 @@ struct TaskListView: View {
                                     .buttonStyle(PlainButtonStyle())
 
                                     VStack(alignment: .leading) {
-                                        Text(task.title)
+                                        Text(task.title ?? "Título desconocido")
                                             .strikethrough(task.isCompleted)
                                             .foregroundColor(task.isCompleted ? .gray : .primary)
                                             .font(.headline)
