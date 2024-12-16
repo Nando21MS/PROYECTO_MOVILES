@@ -29,21 +29,24 @@ struct NoteListView: View {
                     // Listado de Notas
                     List {
                         ForEach(filteredNotes) { note in
-                            // Fila individual
+                            // Fila individual con animación y efectos
                             HStack {
                                 // Enlace para editar la nota
                                 NavigationLink(destination: NoteDetailView(note: note, onSave: { updatedNote in
                                     viewModel.updateNote(note: updatedNote)
                                 })) {
-                                    VStack(alignment: .leading) {
+                                    VStack(alignment: .leading, spacing: 8) { // Aumentamos el espaciado aquí
                                         Text(note.title ?? "Untitled")
                                             .font(.headline)
+                                            .strikethrough(note.title == nil, color: .gray) // Título tachado si está vacío
+                                        
                                         if let details = note.details, !details.isEmpty {
                                             Text(details)
                                                 .font(.subheadline)
                                                 .foregroundColor(.gray)
                                                 .lineLimit(1)
                                         }
+                                        
                                         if let category = note.category {
                                             Text(category)
                                                 .font(.caption)
@@ -60,53 +63,75 @@ struct NoteListView: View {
 
                                 Spacer()
 
-                                // Botón de eliminar, separado del NavigationLink
+                                // Botón de eliminar
                                 Button(action: {
-                                    viewModel.deleteNote(note: note)
+                                    withAnimation {
+                                        viewModel.deleteNote(note: note)
+                                    }
                                 }) {
                                     Image(systemName: "trash.fill")
                                         .foregroundColor(.red)
+                                        .padding(10) // Agregamos más padding al icono de eliminar
+                                        .background(Circle().fill(Color.white).shadow(radius: 5))
                                 }
                                 .buttonStyle(BorderlessButtonStyle()) // Evita conflictos de gestos
                             }
-                            .padding(.vertical, 5)
+                            .padding(.vertical, 12)
+                            .padding(.horizontal)// Aumentamos el padding vertical de la celda
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .strokeBorder(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+                            .opacity(note.title == nil ? 0.5 : 1.0) // Reduce opacidad si no tiene título
+                            .transition(.move(edge: .top)) // Animación al agregar o eliminar elementos
                         }
                         .onDelete { indexSet in
-                            indexSet.forEach { viewModel.deleteNote(note: filteredNotes[$0]) }
+                            withAnimation {
+                                indexSet.forEach { viewModel.deleteNote(note: filteredNotes[$0]) }
+                            }
                         }
                     }
                     .listStyle(PlainListStyle())
                 }
 
-                // Botón flotante para agregar nota
+                // Botón flotante para agregar nueva nota
                 VStack {
                     Spacer()
                     HStack {
                         Spacer()
                         Button(action: {
-                            showingNewNote.toggle()
+                            withAnimation {
+                                showingNewNote.toggle()
+                            }
                         }) {
                             Image(systemName: "plus")
                                 .font(.title)
                                 .foregroundColor(.white)
-                                .padding()
-                                .background(Circle().fill(Color.blue))
+                                .padding(15)
+                                .background(Circle().fill(LinearGradient(gradient: Gradient(colors: [Color.purple, Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing)))
                                 .shadow(radius: 10)
                         }
                         .padding(.trailing, 20)
                         .padding(.bottom, 20)
                     }
                 }
+                .zIndex(1) // Asegura que el botón flotante esté encima de todo
+
             }
             .navigationTitle("Notes")
+            .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
             .sheet(isPresented: $showingNewNote) {
                 NewNoteView(onSave: { title, details, category in
-                    viewModel.addNote(title: title, details: details, category: category)
-                    showingNewNote = false
+                    withAnimation {
+                        viewModel.addNote(title: title, details: details, category: category)
+                        showingNewNote = false
+                    }
                 })
             }
             .onAppear {
-                viewModel.fetchAllNotes()
+                withAnimation {
+                    viewModel.fetchAllNotes()
+                }
             }
         }
     }

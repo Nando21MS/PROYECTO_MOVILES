@@ -31,15 +31,18 @@ struct TaskListView: View {
                             HStack {
                                 // Columna 1: Checkbox para marcar como completada
                                 Button(action: {
-                                    viewModel.toggleTaskCompletion(task: task)
+                                    withAnimation {
+                                        viewModel.toggleTaskCompletion(task: task)
+                                    }
                                 }) {
                                     Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
                                         .foregroundColor(task.isCompleted ? .green : .gray)
                                         .font(.title2)
+                                        .padding(8)
+                                        .background(Circle().fill(Color.white).shadow(radius: 3))
                                 }
-                                .frame(width: 40, height: 40)
-                                .padding(.trailing, 10)
-                                .buttonStyle(PlainButtonStyle()) // Solo el checkbox es clickeable
+                                .frame(width: 50, height: 50)
+                                .buttonStyle(PlainButtonStyle())
 
                                 // Columna 2: Datos de la tarea
                                 ZStack {
@@ -49,7 +52,9 @@ struct TaskListView: View {
                                         .onTapGesture {
                                             if !task.isCompleted {
                                                 selectedTask = task
-                                                showingTaskDetail.toggle()
+                                                withAnimation {
+                                                    showingTaskDetail.toggle()
+                                                }
                                             }
                                         }
 
@@ -66,22 +71,34 @@ struct TaskListView: View {
                                         }
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(10)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .strokeBorder(Color.gray.opacity(0.3), lineWidth: 1)
+                                    )
                                 }
 
                                 // Columna 3: Contenedor de eliminar
-                                HStack {
-                                    Button(action: {
+                                Button(action: {
+                                    withAnimation {
                                         viewModel.deleteTask(task: task)
-                                    }) {
-                                        Image(systemName: "trash.fill")
-                                            .foregroundColor(.red)
-                                            .font(.title2)
                                     }
-                                    .buttonStyle(BorderlessButtonStyle()) // Evita conflictos de gestos
+                                }) {
+                                    Image(systemName: "trash.fill")
+                                        .foregroundColor(.red)
+                                        .font(.title2)
+                                        .padding(10)
+                                        .background(Circle().fill(Color.white).shadow(radius: 3))
                                 }
+                                .buttonStyle(BorderlessButtonStyle())
                             }
                             .padding(.vertical, 8)
                             .opacity(task.isCompleted ? 0.5 : 1.0) // Menor opacidad si está completada
+                            .background(
+                                task.isCompleted ? Color.green.opacity(0.1) : Color.clear
+                            )
+                            .cornerRadius(12)
+                            .transition(.move(edge: .top)) // Animación de transición suave
                         }
 
                         // Tareas completadas (lista desplegable)
@@ -89,14 +106,17 @@ struct TaskListView: View {
                             ForEach(viewModel.tasks.filter { $0.isCompleted }) { task in
                                 HStack {
                                     Button(action: {
-                                        viewModel.toggleTaskCompletion(task: task)
+                                        withAnimation {
+                                            viewModel.toggleTaskCompletion(task: task)
+                                        }
                                     }) {
                                         Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
                                             .foregroundColor(task.isCompleted ? .green : .gray)
                                             .font(.title2)
+                                            .padding(8)
+                                            .background(Circle().fill(Color.white).shadow(radius: 3))
                                     }
-                                    .frame(width: 40, height: 40)
-                                    .padding(.trailing, 10)
+                                    .frame(width: 50, height: 50)
                                     .buttonStyle(PlainButtonStyle())
 
                                     VStack(alignment: .leading) {
@@ -112,20 +132,30 @@ struct TaskListView: View {
                                         }
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(10)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .strokeBorder(Color.gray.opacity(0.3), lineWidth: 1)
+                                    )
 
-                                    HStack {
-                                        Button(action: {
+                                    Button(action: {
+                                        withAnimation {
                                             viewModel.deleteTask(task: task)
-                                        }) {
-                                            Image(systemName: "trash.fill")
-                                                .foregroundColor(.red)
-                                                .font(.title2)
                                         }
-                                        .buttonStyle(BorderlessButtonStyle())
+                                    }) {
+                                        Image(systemName: "trash.fill")
+                                            .foregroundColor(.red)
+                                            .font(.title2)
+                                            .padding(10)
+                                            .background(Circle().fill(Color.white).shadow(radius: 3))
                                     }
+                                    .buttonStyle(BorderlessButtonStyle())
                                 }
                                 .padding(.vertical, 8)
                                 .opacity(0.5) // Tareas completadas con menor opacidad
+                                .background(Color.green.opacity(0.1))
+                                .cornerRadius(12)
+                                .transition(.move(edge: .top)) // Animación de transición suave
                             }
                         }
                     }
@@ -141,18 +171,22 @@ struct TaskListView: View {
                             reminderDate = nil
                             showDatePicker = false
                             selectedTask = nil
-                            showingTaskDetail.toggle()
+                            withAnimation {
+                                showingTaskDetail.toggle()
+                            }
                         }) {
                             Image(systemName: "plus")
                                 .font(.title)
                                 .foregroundColor(.white)
-                                .padding()
-                                .background(Circle().fill(Color.blue))
+                                .padding(15)
+                                .background(Circle().fill(LinearGradient(gradient: Gradient(colors: [Color.purple, Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing)))
                                 .shadow(radius: 10)
                         }
                         .padding(.trailing, 20)
                         .padding(.bottom, 20)
                     }
+                    .zIndex(1) // Esto asegura que el botón esté encima de las otras vistas
+
                 }
 
                 // Vista flotante para agregar o editar tarea
@@ -167,21 +201,30 @@ struct TaskListView: View {
                                 } else {
                                     viewModel.addTask(title: title, reminderDate: reminderDate)
                                 }
-                                showingTaskDetail = false
+                                withAnimation {
+                                    showingTaskDetail = false
+                                }
                             },
                             onCancel: {
-                                showingTaskDetail = false
+                                withAnimation {
+                                    showingTaskDetail = false
+                                }
                             }
                         )
-                        .frame(height: 300)
-                        .background(Color.white)
-                        .cornerRadius(20)
-                        .shadow(radius: 10)
+                        .frame(height: 350)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(LinearGradient(gradient: Gradient(colors: [Color.white, Color.gray.opacity(0.2)]), startPoint: .top, endPoint: .bottom))
+                        )
+                        .shadow(radius: 20)
                         .padding()
+                        .transition(.move(edge: .bottom)) // Animación de entrada
+                        .zIndex(2) // Esto asegura que el TaskDetailView esté encima del resto de las vistas
                     }
                 }
             }
             .navigationTitle("Tasks")
+            .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
         }
     }
 

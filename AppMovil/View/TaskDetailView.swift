@@ -13,6 +13,7 @@ struct TaskDetailView: View {
     @State private var setReminder: Bool = false  // Nueva propiedad para habilitar/deshabilitar recordatorio
     @State private var showAlert = false  // Para controlar la alerta
     @State private var alertMessage = ""  // Mensaje de la alerta
+    @State private var titleIsValid = true  // Para controlar la validez del título
 
     @Environment(\.dismiss) var dismiss
 
@@ -29,15 +30,23 @@ struct TaskDetailView: View {
 
     var body: some View {
         VStack {
+            // Campo de texto para el título de la tarea
             TextField("Enter task title", text: $title)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
+                .background(titleIsValid ? Color.clear : Color.red.opacity(0.2))
+                .cornerRadius(8)
+                .onChange(of: title) { newValue in
+                    titleIsValid = !newValue.isEmpty
+                }
 
+            // Toggle para activar/desactivar el recordatorio
             Toggle(isOn: $setReminder) {
                 Text("Set Reminder")
             }
             .padding()
 
+            // Mostrar el selector de fecha si el recordatorio está activado
             if setReminder {
                 DatePicker(
                     "Set Reminder",
@@ -51,6 +60,7 @@ struct TaskDetailView: View {
             }
 
             HStack {
+                // Botón de cancelación
                 Button("Cancel") {
                     onCancel()
                 }
@@ -58,9 +68,15 @@ struct TaskDetailView: View {
 
                 Spacer()
 
+                // Botón de guardar
                 Button("Save") {
-                    // Verificar si la fecha y hora del recordatorio es mayor a la fecha y hora actuales
-                    if let reminderDate = reminderDate, reminderDate <= Date() {
+                    // Validar si el título está vacío
+                    if title.isEmpty {
+                        alertMessage = "Title is required."
+                        titleIsValid = false
+                        showAlert = true
+                    } else if setReminder, let reminderDate = reminderDate, reminderDate <= Date() {
+                        // Solo validamos la fecha del recordatorio si está activado
                         alertMessage = "The reminder date and time must be in the future."
                         showAlert = true
                     } else {
@@ -74,7 +90,7 @@ struct TaskDetailView: View {
         }
         .padding()
         .alert(isPresented: $showAlert) {
-            Alert(title: Text("Invalid Date/Time"),
+            Alert(title: Text("Validation Error"),
                   message: Text(alertMessage),
                   dismissButton: .default(Text("OK")))
         }
