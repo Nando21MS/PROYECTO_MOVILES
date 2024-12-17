@@ -53,7 +53,7 @@ class TaskListViewModel: ObservableObject {
     }
 
     func fetchAllTasks() {
-        let request: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()  // Usamos TaskEntity
+        let request: NSFetchRequest<TaskEntity> = TaskEntity.fetchAllTaskRequest()  // Usamos TaskEntity
         do {
             tasks = try context.fetch(request)
         } catch {
