@@ -22,7 +22,8 @@ struct HomeView: View {
                         .tabItem {
                             Label("Notes", systemImage: "note.text")
                         }
-                }
+                }            .navigationBarBackButtonHidden(true) // Aquí oculto el botón de "back"
+
     }
 }
 
