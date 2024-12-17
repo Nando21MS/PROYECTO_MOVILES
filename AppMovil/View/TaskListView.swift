@@ -224,8 +224,11 @@ struct TaskListView: View {
                 }
             }
             .navigationTitle("Tasks")
+
             .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
         }
+        .navigationBarBackButtonHidden(true) // Aquí oculto el botón de "back"
+
     }
 
     private func deleteTask(at offsets: IndexSet) {
