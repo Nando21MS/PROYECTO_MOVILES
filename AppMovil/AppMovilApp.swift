@@ -19,7 +19,7 @@ struct AppMovilApp: App {
     
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            LoginView(isLoggedOut: .constant(true))
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

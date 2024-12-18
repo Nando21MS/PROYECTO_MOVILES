@@ -108,7 +108,7 @@ struct RegisterView: View {
                     }
 
                     // Redirigir al Login
-                    NavigationLink(destination: LoginView()) {
+                    NavigationLink(destination: LoginView(isLoggedOut: .constant(true))) {
                         HStack {
                             Text("¿Ya tienes cuenta?")
                                 .foregroundColor(.black)
