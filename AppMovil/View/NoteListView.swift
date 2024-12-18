@@ -35,10 +35,10 @@ struct NoteListView: View {
                                 NavigationLink(destination: NoteDetailView(note: note, onSave: { updatedNote in
                                     viewModel.updateNote(note: updatedNote)
                                 })) {
-                                    VStack(alignment: .leading, spacing: 8) { // Aumentamos el espaciado aquí
+                                    VStack(alignment: .leading, spacing: 8) {
                                         Text(note.title ?? "Untitled")
                                             .font(.headline)
-                                            .strikethrough(note.title == nil, color: .gray) // Título tachado si está vacío
+                                            .strikethrough(note.title == nil, color: .gray)
                                         
                                         if let details = note.details, !details.isEmpty {
                                             Text(details)
@@ -59,7 +59,7 @@ struct NoteListView: View {
                                         }
                                     }
                                 }
-                                .contentShape(Rectangle()) // Asegura que el toque sea claro
+                                .contentShape(Rectangle())
 
                                 Spacer()
 
@@ -71,19 +71,19 @@ struct NoteListView: View {
                                 }) {
                                     Image(systemName: "trash.fill")
                                         .foregroundColor(.red)
-                                        .padding(10) // Agregamos más padding al icono de eliminar
+                                        .padding(10)
                                         .background(Circle().fill(Color.white).shadow(radius: 5))
                                 }
-                                .buttonStyle(BorderlessButtonStyle()) // Evita conflictos de gestos
+                                .buttonStyle(BorderlessButtonStyle())
                             }
                             .padding(.vertical, 12)
-                            .padding(.horizontal)// Aumentamos el padding vertical de la celda
+                            .padding(.horizontal)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .strokeBorder(Color.gray.opacity(0.3), lineWidth: 1)
                             )
-                            .opacity(note.title == nil ? 0.5 : 1.0) // Reduce opacidad si no tiene título
-                            .transition(.move(edge: .top)) // Animación al agregar o eliminar elementos
+                            .opacity(note.title == nil ? 0.5 : 1.0)
+                            .transition(.move(edge: .top))
                         }
                         .onDelete { indexSet in
                             withAnimation {
@@ -99,11 +99,11 @@ struct NoteListView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button(action: {
+                        NavigationLink(destination: NewNoteView(onSave: { title, details, category in
                             withAnimation {
-                                showingNewNote.toggle()
+                                viewModel.addNote(title: title, details: details, category: category)
                             }
-                        }) {
+                        })) {
                             Image(systemName: "plus")
                                 .font(.title)
                                 .foregroundColor(.white)
@@ -116,18 +116,9 @@ struct NoteListView: View {
                     }
                 }
                 .zIndex(1) // Asegura que el botón flotante esté encima de todo
-
             }
             .navigationTitle("Notes")
             .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
-            .sheet(isPresented: $showingNewNote) {
-                NewNoteView(onSave: { title, details, category in
-                    withAnimation {
-                        viewModel.addNote(title: title, details: details, category: category)
-                        showingNewNote = false
-                    }
-                })
-            }
             .onAppear {
                 withAnimation {
                     viewModel.fetchAllNotes()
