@@ -38,7 +38,10 @@ struct LoginView: View {
                                     .disableAutocorrection(true)
                                     .keyboardType(.emailAddress)
                                     .padding(.bottom, 10)
-                                
+                                    .onSubmit {
+                                        loginUser() // Ejecuta la función al presionar Enter
+                                    }
+
                                 // Campo de texto: Contraseña
                                 SecureField("Contraseña", text: $password)
                                     .padding()
@@ -46,6 +49,10 @@ struct LoginView: View {
                                     .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
                                     .padding(.horizontal)
                                     .padding(.bottom, 10)
+                                    .onSubmit {
+                                        loginUser() // Ejecuta la función al presionar Enter
+                                    }
+
                                 
                                 // Botón para iniciar sesión
                                 Button(action: {
@@ -81,7 +88,8 @@ struct LoginView: View {
                         }
                         .frame(width: geometry.size.width, height: geometry.size.height)
                     }
-                    
+                    .navigationBarBackButtonHidden(true) // Aquí oculto el botón de "back"
+
                     // Alerta si las credenciales son incorrectas
                     .alert(isPresented: $showAlert) {
                         Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))

@@ -98,11 +98,11 @@ struct NoteListView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button(action: {
+                        NavigationLink(destination: NewNoteView(onSave: { title, details, category in
                             withAnimation {
-                                showingNewNote.toggle()
+                                viewModel.addNote(title: title, details: details, category: category)
                             }
-                        }) {
+                        })) {
                             Image(systemName: "plus")
                                 .font(.title)
                                 .foregroundColor(.white)
@@ -114,19 +114,11 @@ struct NoteListView: View {
                         .padding(.bottom, 20)
                     }
                 }
-                .zIndex(1)
 
+                .zIndex(1) // Asegura que el botón flotante esté encima de todo
             }
             .navigationTitle("Notes")
             .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
-            .sheet(isPresented: $showingNewNote) {
-                NewNoteView(onSave: { title, details, category in
-                    withAnimation {
-                        viewModel.addNote(title: title, details: details, category: category)
-                        showingNewNote = false
-                    }
-                })
-            }
             .onAppear {
                 withAnimation {
                     viewModel.fetchAllNotes()
