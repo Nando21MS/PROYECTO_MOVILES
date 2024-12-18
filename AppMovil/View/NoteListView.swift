@@ -1,16 +1,15 @@
-//
-//  NoteListView.swift
-//  AppMovil
-//
-//  Created by DAMII on 14/12/24.
-//
-
 import SwiftUI
 
 struct NoteListView: View {
-    @StateObject private var viewModel = NoteListViewModel()
+    @StateObject private var viewModel: NoteListViewModel
     @State private var selectedCategory: String = "All"
     @State private var showingNewNote = false
+
+    init() {
+        // Obtén el contexto desde PersistenceController
+        let context = PersistenceController.shared.container.viewContext
+        _viewModel = StateObject(wrappedValue: NoteListViewModel(context: context))
+    }
 
     var body: some View {
         NavigationStack {
@@ -115,6 +114,7 @@ struct NoteListView: View {
                         .padding(.bottom, 20)
                     }
                 }
+
                 .zIndex(1) // Asegura que el botón flotante esté encima de todo
             }
             .navigationTitle("Notes")
