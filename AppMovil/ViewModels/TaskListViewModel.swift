@@ -1,63 +1,140 @@
-//
-//  TaskListViewModel.swift
-//  AppMovil
-//
-//  Created by DAMII on 14/12/24.
-//
-
 import CoreData
+import FirebaseFirestore
+import FirebaseAuth
 import UserNotifications
 
 class TaskListViewModel: ObservableObject {
-    @Published var tasks: [TaskEntity] = []  // Usamos TaskEntity
+    @Published var tasks: [TaskEntity] = []
     private var context: NSManagedObjectContext
+    private var db = Firestore.firestore()
 
     init(context: NSManagedObjectContext) {
         self.context = context
-        fetchAllTasks()
+        fetchAllTasks() // Inicializar con las tareas
     }
 
     func addTask(title: String, reminderDate: Date? = nil) {
-        let task = TaskEntity(context: context)  // Usamos TaskEntity
-        task.title = title
-        task.reminderDate = reminderDate
-        task.isCompleted = false
-        saveContext()
-        fetchAllTasks()
-        if let reminderDate = reminderDate {
-            scheduleReminder(for: task)
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("Usuario no autenticado")
+            return
+        }
+
+        // Crear un identificador único para la tarea
+        let taskId = UUID().uuidString
+
+        // Crear tarea en Firestore
+        let taskData: [String: Any] = [
+            "taskId": taskId,
+            "title": title,
+            "reminderDate": reminderDate as Any,
+            "isCompleted": false,
+            "createdAt": FieldValue.serverTimestamp(),
+            "userId": userID
+        ]
+
+        db.collection("tasks").document(userID).collection("users").document(taskId).setData(taskData) { error in
+            if let error = error {
+                print("Error al agregar tarea: \(error.localizedDescription)")
+            } else {
+                print("Tarea agregada correctamente")
+                self.fetchAllTasks() // Refrescar la lista de tareas
+            }
         }
     }
-    
+
     func updateTask(task: TaskEntity, title: String, reminderDate: Date?) {
-        task.title = title
-        task.reminderDate = reminderDate
-        saveContext()
-        fetchAllTasks()
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        guard let taskId = task.taskId else {
+            print("Error: la tarea no tiene un taskId asignado")
+            return
+        }
+
+        // Actualizar tarea en Firestore
+        db.collection("tasks").document(userID).collection("users").document(taskId).updateData([
+            "title": title,
+            "reminderDate": reminderDate as Any
+        ]) { error in
+            if let error = error {
+                print("Error al actualizar tarea: \(error.localizedDescription)")
+            } else {
+                print("Tarea actualizada correctamente")
+                self.fetchAllTasks()
+            }
+        }
     }
 
-
     func toggleTaskCompletion(task: TaskEntity) {
-        task.isCompleted.toggle()  // Usamos TaskEntity
-        saveContext()
-        fetchAllTasks()
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        guard let taskId = task.taskId else {
+            print("Error: la tarea no tiene un taskId asignado")
+            return
+        }
+
+        // Toggle el estado de la tarea en Firestore
+        let newCompletionStatus = !task.isCompleted
+        db.collection("tasks").document(userID).collection("users").document(taskId).updateData([
+            "isCompleted": newCompletionStatus
+        ]) { error in
+            if let error = error {
+                print("Error al cambiar el estado de la tarea: \(error.localizedDescription)")
+            } else {
+                print("Estado de la tarea cambiado correctamente")
+                self.fetchAllTasks()
+            }
+        }
     }
 
     func deleteTask(task: TaskEntity) {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(
-            withIdentifiers: [task.objectID.uriRepresentation().absoluteString]
-        )
-        context.delete(task)  // Usamos TaskEntity
-        saveContext()
-        fetchAllTasks()
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        guard let taskId = task.taskId else {
+            print("Error: la tarea no tiene un taskId asignado")
+            return
+        }
+
+        // Eliminar tarea de Firestore
+        db.collection("tasks").document(userID).collection("users").document(taskId).delete { error in
+            if let error = error {
+                print("Error al eliminar tarea: \(error.localizedDescription)")
+            } else {
+                print("Tarea eliminada correctamente")
+                self.fetchAllTasks()
+            }
+        }
     }
 
     func fetchAllTasks() {
-        let request: NSFetchRequest<TaskEntity> = TaskEntity.fetchAllTaskRequest()  // Usamos TaskEntity
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+
+        // Obtener todas las tareas de Firestore
+        db.collection("tasks").document(userID).collection("users").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error al obtener tareas: \(error.localizedDescription)")
+            } else {
+                self.deleteAllTasksFromCoreData() // Eliminar tareas existentes en Core Data
+
+                self.tasks = snapshot?.documents.compactMap { document in
+                    let task = TaskEntity(context: self.context)
+                    task.taskId = document.documentID // Asignar el ID del documento Firestore
+                    task.title = document["title"] as? String ?? "Título desconocido"
+                    task.reminderDate = (document["reminderDate"] as? Timestamp)?.dateValue()
+                    task.isCompleted = document["isCompleted"] as? Bool ?? false
+                    self.saveContext()
+                    return task
+                } ?? []
+            }
+        }
+    }
+
+    private func deleteAllTasksFromCoreData() {
+        let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchAllTaskRequest()
         do {
-            tasks = try context.fetch(request)
+            let tasksInCoreData = try context.fetch(fetchRequest)
+            for task in tasksInCoreData {
+                context.delete(task)
+            }
+            saveContext()
         } catch {
-            print(error.localizedDescription)
+            print("Error al eliminar tareas de Core Data: \(error.localizedDescription)")
         }
     }
 
@@ -66,32 +143,7 @@ class TaskListViewModel: ObservableObject {
             do {
                 try context.save()
             } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    private func scheduleReminder(for task: TaskEntity) {  // Usamos TaskEntity
-        guard let reminderDate = task.reminderDate else { return }
-        let content = UNMutableNotificationContent()
-        content.title = "Reminder"
-        content.body = task.title ?? "No title"
-        content.sound = .default
-
-        let trigger = UNCalendarNotificationTrigger(
-            dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: reminderDate),
-            repeats: false
-        )
-
-        let request = UNNotificationRequest(
-            identifier: task.objectID.uriRepresentation().absoluteString,
-            content: content,
-            trigger: trigger
-        )
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling reminder: \(error)")
+                print("Error al guardar contexto de Core Data: \(error.localizedDescription)")
             }
         }
     }

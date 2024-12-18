@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-
 struct RegisterView: View {
     @State private var username = ""
     @State private var fullName = ""
@@ -53,21 +52,24 @@ struct RegisterView: View {
                         .autocapitalization(.none)
 
                     // Campo de texto: Contraseña con botón de visibilidad
-                                        ZStack {
-                                            RoundedTextField(
-                                                placeholder: "Contraseña",
-                                                text: $password,
-                                                isSecure: !isPasswordVisible
-                                            )
-                                            Button(action: {
-                                                isPasswordVisible.toggle()
-                                            }) {
-                                                Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-                                                    .foregroundColor(.gray)
-                                            }
-                                            .padding(.trailing, 10)
-                                            .frame(maxWidth: .infinity, alignment: .trailing)
-                                        }
+                    ZStack {
+                        RoundedTextField(
+                            placeholder: "Contraseña",
+                            text: $password,
+                            isSecure: !isPasswordVisible
+                        )
+                        Button(action: {
+                            isPasswordVisible.toggle()
+                        }) {
+                            Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.trailing, 10)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    .onSubmit {
+                        registerUser()
+                    }
 
                     // Fecha de nacimiento
                     VStack(alignment: .leading, spacing: 10) {
@@ -93,25 +95,7 @@ struct RegisterView: View {
 
                     // Botón para crear cuenta
                     Button(action: {
-                        if validateInputs() {
-                            let dateOfBirth = "\(month)/\(day)/\(year)"
-                            viewModel.registerUser(
-                                fullName: fullName,
-                                email: email,
-                                phoneNumber: phoneNumber,
-                                username: username,
-                                password: password,
-                                dateOfBirth: dateOfBirth
-                            ) { success in
-                                if success {
-                                    alertMessage = "Usuario registrado exitosamente"
-                                    showAlert = true
-                                } else {
-                                    alertMessage = viewModel.errorMessage ?? "Error desconocido"
-                                    showAlert = true
-                                }
-                            }
-                        }
+                        registerUser()
                     }) {
                         Text("Crear Cuenta")
                             .fontWeight(.bold)
@@ -145,6 +129,29 @@ struct RegisterView: View {
             // Alerta
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Registro"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
+
+    // Función para registrar usuario
+    private func registerUser() {
+        if validateInputs() {
+            let dateOfBirth = "\(month)/\(day)/\(year)"
+            viewModel.registerUser(
+                fullName: fullName,
+                email: email,
+                phoneNumber: phoneNumber,
+                username: username,
+                password: password,
+                dateOfBirth: dateOfBirth
+            ) { success in
+                if success {
+                    alertMessage = "Usuario registrado exitosamente"
+                    showAlert = true
+                } else {
+                    alertMessage = viewModel.errorMessage ?? "Error desconocido"
+                    showAlert = true
+                }
             }
         }
     }
@@ -208,7 +215,6 @@ struct RegisterView: View {
     }
 }
 
-
 // Campo de texto reutilizable con diseño similar al LoginView
 struct RoundedTextField: View {
     var placeholder: String
@@ -235,6 +241,7 @@ struct RoundedTextField: View {
         .foregroundColor(.black)
     }
 }
+
 
 #Preview {
     RegisterView()
