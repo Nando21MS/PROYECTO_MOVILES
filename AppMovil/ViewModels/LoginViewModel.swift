@@ -19,6 +19,7 @@ class LoginViewModel: ObservableObject {
                    completion(false)
                    return
                }
+               
 
                // Extraer el nombre de usuario desde Firebase si es necesario
                if let user = result?.user {

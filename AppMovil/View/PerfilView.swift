@@ -3,7 +3,6 @@ import UIKit
 import Firebase
 import FirebaseAuth
 
-// 1. Crear el ImagePicker como un UIViewControllerRepresentable
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var image: UIImage?
     
