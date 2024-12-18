@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct LoginView: View {
+    @Binding var isLoggedOut: Bool // Binding para cambiar el estado de sesión
+    
     @State private var email: String = "" // Correo electrónico
     @State private var password: String = "" // Contraseña
     @State private var showAlert: Bool = false // Alerta de error
@@ -102,6 +104,7 @@ struct LoginView: View {
             if success {
                 // Autenticación exitosa
                 viewModel.isAuthenticated = true
+                isLoggedOut = false // Actualiza el estado de sesión al logueado
             } else {
                 // Error al iniciar sesión
                 alertMessage = viewModel.errorMessage ?? "Error desconocido"
@@ -111,7 +114,6 @@ struct LoginView: View {
     }
 }
 
-
 #Preview {
-    LoginView()
+    LoginView(isLoggedOut: .constant(true)) // Esto es solo un ejemplo, asumiendo que el estado se pasa desde un padre
 }
