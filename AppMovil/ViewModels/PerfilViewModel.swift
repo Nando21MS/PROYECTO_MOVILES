@@ -34,7 +34,6 @@ class PerfilViewModel: ObservableObject {
         }
     }
 
-    // Función para obtener los datos del perfil
     func fetchUserProfile() {
         guard let userId = userId else { return }
 

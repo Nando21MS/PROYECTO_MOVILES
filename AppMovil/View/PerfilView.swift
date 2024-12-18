@@ -3,7 +3,6 @@ import UIKit
 import Firebase
 import FirebaseAuth
 
-// 1. Crear el ImagePicker como un UIViewControllerRepresentable
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var image: UIImage?
     
@@ -20,6 +19,7 @@ struct ImagePicker: UIViewControllerRepresentable {
             }
             picker.dismiss(animated: true, completion: nil)
         }
+        
         
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             picker.dismiss(animated: true, completion: nil)
