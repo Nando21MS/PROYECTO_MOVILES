@@ -7,15 +7,16 @@
 
 import Foundation
 import CoreData
-
+ 
 class Note: NSManagedObject, Identifiable {
+    @NSManaged var noteId: String?
     @NSManaged var title: String
     @NSManaged var details: String?
     @NSManaged var category: String?
+    @NSManaged var userID: String?
 
     static func fetchAllNotesRequest() -> NSFetchRequest<Note> {
-        return NSFetchRequest<Note>(entityName: "Note")
+        NSFetchRequest<Note>(entityName: "Note")
     }
 }
-
 

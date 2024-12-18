@@ -3,7 +3,9 @@
     <entity name="Note" representedClassName=".Note" syncable="YES">
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="details" optional="YES" attributeType="String"/>
+        <attribute name="noteId" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="userID" optional="YES" attributeType="String"/>
     </entity>
     <entity name="TaskEntity" representedClassName=".TaskEntity" syncable="YES">
         <attribute name="isCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

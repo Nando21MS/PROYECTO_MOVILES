@@ -1,16 +1,15 @@
-//
-//  NoteListView.swift
-//  AppMovil
-//
-//  Created by DAMII on 14/12/24.
-//
-
 import SwiftUI
 
 struct NoteListView: View {
-    @StateObject private var viewModel = NoteListViewModel()
+    @StateObject private var viewModel: NoteListViewModel
     @State private var selectedCategory: String = "All"
     @State private var showingNewNote = false
+
+    init() {
+        // Obtén el contexto desde PersistenceController
+        let context = PersistenceController.shared.container.viewContext
+        _viewModel = StateObject(wrappedValue: NoteListViewModel(context: context))
+    }
 
     var body: some View {
         NavigationStack {
@@ -35,10 +34,10 @@ struct NoteListView: View {
                                 NavigationLink(destination: NoteDetailView(note: note, onSave: { updatedNote in
                                     viewModel.updateNote(note: updatedNote)
                                 })) {
-                                    VStack(alignment: .leading, spacing: 8) { // Aumentamos el espaciado aquí
+                                    VStack(alignment: .leading, spacing: 8) {
                                         Text(note.title ?? "Untitled")
                                             .font(.headline)
-                                            .strikethrough(note.title == nil, color: .gray) // Título tachado si está vacío
+                                            .strikethrough(note.title == nil, color: .gray)
                                         
                                         if let details = note.details, !details.isEmpty {
                                             Text(details)
@@ -59,7 +58,7 @@ struct NoteListView: View {
                                         }
                                     }
                                 }
-                                .contentShape(Rectangle()) // Asegura que el toque sea claro
+                                .contentShape(Rectangle())
 
                                 Spacer()
 
@@ -71,19 +70,19 @@ struct NoteListView: View {
                                 }) {
                                     Image(systemName: "trash.fill")
                                         .foregroundColor(.red)
-                                        .padding(10) // Agregamos más padding al icono de eliminar
+                                        .padding(10)
                                         .background(Circle().fill(Color.white).shadow(radius: 5))
                                 }
-                                .buttonStyle(BorderlessButtonStyle()) // Evita conflictos de gestos
+                                .buttonStyle(BorderlessButtonStyle())
                             }
                             .padding(.vertical, 12)
-                            .padding(.horizontal)// Aumentamos el padding vertical de la celda
+                            .padding(.horizontal)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .strokeBorder(Color.gray.opacity(0.3), lineWidth: 1)
                             )
-                            .opacity(note.title == nil ? 0.5 : 1.0) // Reduce opacidad si no tiene título
-                            .transition(.move(edge: .top)) // Animación al agregar o eliminar elementos
+                            .opacity(note.title == nil ? 0.5 : 1.0)
+                            .transition(.move(edge: .top))
                         }
                         .onDelete { indexSet in
                             withAnimation {
@@ -115,7 +114,7 @@ struct NoteListView: View {
                         .padding(.bottom, 20)
                     }
                 }
-                .zIndex(1) // Asegura que el botón flotante esté encima de todo
+                .zIndex(1)
 
             }
             .navigationTitle("Notes")
