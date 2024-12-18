@@ -11,6 +11,9 @@ struct NewNoteView: View {
     @State private var title: String = ""
     @State private var details: String = ""
     @State private var category: String = "Work"
+    @State private var titleIsValid: Bool = true  // Estado para validar el título
+    @State private var showAlert: Bool = false  // Para mostrar la alerta si el título es inválido
+    @State private var alertMessage: String = ""  // Mensaje de la alerta
     @Environment(\.dismiss) var dismiss
 
     let onSave: (String, String, String) -> Void
@@ -21,6 +24,19 @@ struct NewNoteView: View {
                 Section(header: Text("Title").font(.headline)) {
                     TextField("Enter note title", text: $title)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .onChange(of: title) { newValue in
+                            // Validar que el título no esté vacío
+                            titleIsValid = !newValue.isEmpty
+                        }
+                        .background(titleIsValid ? Color.clear : Color.red.opacity(0.2))
+                        .cornerRadius(8)
+                    
+                    // Si el título no es válido, mostramos un mensaje de error
+                    if !titleIsValid {
+                        Text("Title is required")
+                            .font(.footnote)
+                            .foregroundColor(.red)
+                    }
                 }
 
                 Section(header: Text("Details")) {
@@ -38,25 +54,29 @@ struct NewNoteView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
-
-                Button(action: {
-                    onSave(title, details, category)
-                    dismiss()
-                }) {
-                    Text("Save Note")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.blue)
-                        .cornerRadius(10)
-                }
-                .padding(.top, 20)
             }
             .navigationTitle("New Note")
-            .navigationBarItems(trailing: Button("Cancel") {
-                dismiss()
-            })
+            .navigationBarItems(trailing: Button("Save") {
+                if title.isEmpty {
+                    alertMessage = "Title is required."
+                    showAlert = true
+                } else if titleIsValid {  // Solo guarda si el título es válido
+                    onSave(title, details, category)
+                    dismiss()  // Dismissing the view after saving
+                }
+            }
+            .disabled(title.isEmpty)) // Deshabilitar el botón si el título está vacío
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Validation Error"),
+                      message: Text(alertMessage),
+                      dismissButton: .default(Text("OK")))
+            }
         }
     }
+}
+
+#Preview {
+    NewNoteView(onSave: { title, details, category in
+        print("Note saved with title: \(title), details: \(details), category: \(category)")
+    })
 }
