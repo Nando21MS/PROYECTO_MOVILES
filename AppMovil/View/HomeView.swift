@@ -12,19 +12,33 @@ struct HomeView: View {
             LoginView(isLoggedOut: $isLoggedOut)
                 .transition(.move(edge: .leading)) // Animación de deslizamiento
         } else {
-            TabView {
-                TaskListView(viewContext: viewContext) // Pasar el viewContext aquí
+            ZStack {
+                TabView {
+                    NavigationView {
+                        TaskListView(viewContext: viewContext, isLoggedOut: $isLoggedOut)
+                            .navigationBarTitle("Tasks", displayMode: .inline)
+                    }
                     .tabItem {
                         Label("Tasks", systemImage: "checkmark.circle")
                     }
-                PerfilView(isLoggedOut: $isLoggedOut) // Pasar el estado de login a la vista de perfil
+                    
+                    NavigationView {
+                        PerfilView(isLoggedOut: $isLoggedOut)
+                            .navigationBarTitle("Perfil", displayMode: .inline)
+                    }
                     .tabItem {
                         Label("Perfil", systemImage: "person.circle")
                     }
-                NoteListView()
+                    
+                    NavigationView {
+                        NoteListView()
+                            .navigationBarTitle("Notes", displayMode: .inline)
+                    }
                     .tabItem {
                         Label("Notes", systemImage: "note.text")
                     }
+                }
+                .zIndex(1)
             }
         }
     }
